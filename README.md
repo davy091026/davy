@@ -366,7 +366,6 @@ body {
     border-top: 1px solid #eee;
 }
 </style>
-</head>
 <body>
 <div class="container">
     <div class="header">
