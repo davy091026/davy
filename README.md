@@ -2256,4 +2256,3 @@ ${generateSuggestions(scores).join('\n')}
 })();
 </script>
 </body>
-</html>
