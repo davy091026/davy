@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>T12职业优势测评系统 - 企业中高层领导专业版</title>
