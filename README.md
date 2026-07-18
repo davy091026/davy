@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -785,7 +784,7 @@
                     <div class="intro">
                         <h3>📋 测评说明</h3>
                         <p>本测评体系由人力资源管理师<strong>DAVY</strong>设计，以招聘场景为核心导向，基于心理学、组织行为学及人才管理理论构建多维评估模型，从<strong>职业素质（含专业技能、岗位适配性、职业素养等细分维度）、职业性格（融合MBTI、Big Five等人格理论框架）、情商EQ（涵盖情绪感知、自我调节、人际互动与社会适应等能力层级）、智商IQ（聚焦逻辑推理、创造性思维与复杂问题解决能力）</strong>四大核心维度，对候选人的职业潜力进行系统性、动态化评估。通过定量测评工具与定性行为分析相结合的方法，构建标准化与个性化并重的评估矩阵，旨在为企业提供精准的用人决策参考，优化人才匹配效能；同时赋能个体深度认知自身优势特征及发展象限，支持职业路径规划与潜能开发。测评结果以可视化多维雷达图及诊断性报告呈现，兼具科学性与实践指导价值，适用于战略性招聘筛选、人才梯队建设及人岗动态适配等多场景应用。</p>
-                        <p style="margin-top:8px;">⏱️ 本次测评时长：25-35分钟 | 📊 专业分析报告 | 📄 下载测评结果</p>
+                        <p style="margin-top:8px;">⏱️  本次测评时长：25-35分钟 | 📊 专业分析报告 | 📄 下载测评结果</p>
                     </div>
                     <div class="dimensions-grid">
                         <div class="dimension-card"><div class="icon">💼</div><h4>职业素质</h4><p>30题 · 管理能力</p></div>
@@ -809,7 +808,7 @@
                             <option value="教育">教育</option>
                             <option value="其他">其他</option>
                         </select>
-                        <div class="field-hint">⚠️ 以上两项为必填项，一项为选择项，您选择行业的时候要慎重，不同行业测评倾向不同，可能会影响最终结果</div>
+                        <div class="field-hint">⚠️ 以上两项为必填项，一项为选择项，您选择行业的时候要慎重，不同行业测评倾向不同，可能会影响最终结果。</div>
                     </div>
                     <button class="btn" onclick="startQuiz()">开始测评 →</button>
                 </div>
