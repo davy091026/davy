@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
     </script>
     <style>
-        /* ===== 全局样式（与之前一致） ===== */
+        /* ===== 全局样式 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -304,7 +304,7 @@
             display: none;
             gap: 6px;
             padding: 0;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             position: relative;
         }
         #result.active {
@@ -328,33 +328,32 @@
             line-height: 1.4;
         }
 
-        /* 左右对称面板 */
-        .left-panel, .right-panel {
-            grid-column: span 1;
+        /* 面板样式 - 所有面板统一为1列（等宽） */
+        .panel {
             background: #fafbfc;
             border-radius: 6px;
             padding: 6px 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
             display: flex;
             flex-direction: column;
+            grid-column: span 1;
         }
-        .left-panel {
+        .panel-warning {
             background: #fff8e7;
             border: 1px solid #ffc107;
         }
-        .left-panel h3 {
+        .panel-warning h3 {
             color: #856404;
         }
-        .left-panel .analysis-box {
+        .panel-warning .analysis-box {
             border-left-color: #ffc107;
             background: #fffbf0;
         }
-        .right-panel .analysis-box {
+        .panel .analysis-box {
             border-left-color: #667eea;
         }
 
-        .left-panel .suggestions-list li::before,
-        .right-panel .suggestions-list li::before {
+        .panel .suggestions-list li::before {
             content: '✓';
             position: absolute;
             left: 0;
@@ -364,7 +363,24 @@
             font-weight: bold;
         }
 
-        /* 其他占满两列的模块 */
+        /* 雷达图容器 */
+        .radar-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            min-height: 180px;
+        }
+        #radarChart {
+            width: 100%;
+            height: auto;
+            max-width: 220px;
+            aspect-ratio: 1/1;
+            background: #fff;
+            border-radius: 4px;
+        }
+
+        /* 占满三列的模块 */
         .full-width {
             grid-column: 1/-1;
         }
@@ -581,9 +597,16 @@
             #result {
                 display: grid !important;
                 gap: 4px;
+                grid-template-columns: 1fr 1fr 1fr !important;
             }
-            #result .result-section {
-                page-break-inside: avoid;
+            .panel {
+                grid-column: span 1 !important;
+            }
+            .full-width {
+                grid-column: 1/-1 !important;
+            }
+            #radarChart {
+                max-width: 160px;
             }
         }
 
@@ -592,13 +615,13 @@
                 grid-template-columns: 1fr 1fr;
             }
             #result {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
             }
-            .left-panel, .right-panel {
+            .panel {
                 grid-column: 1 / -1 !important;
             }
-            #result .result-section {
-                grid-column: 1 !important;
+            #radarChart {
+                max-width: 200px;
             }
         }
         @media (max-width: 480px) {
@@ -678,37 +701,44 @@
                     </div>
                 </div>
 
-                <!-- 左右对称：左侧作答质量分析，右侧核心优势与风险摘要 -->
-                <div class="left-panel">
+                <!-- 第一行：作答质量分析（左）、核心优势（中）、雷达图（右） -->
+                <div class="panel panel-warning">
                     <h3 style="color:#856404;">⚠️ 作答质量分析</h3>
                     <div id="validityWarning" class="analysis-box" style="border-left-color:#ffc107; background:#fffbf0;"></div>
                 </div>
-                <div class="right-panel">
+                <div class="panel">
                     <h3>📌 核心优势与风险摘要</h3>
                     <div id="recruitSummary" class="analysis-box"></div>
                 </div>
+                <div class="panel">
+                    <h3>📊 八大模块雷达图</h3>
+                    <div class="radar-container">
+                        <canvas id="radarChart" width="300" height="300"></canvas>
+                    </div>
+                </div>
 
-                <!-- 以下各模块占满两列 -->
+                <!-- 八大模块综合评分（跨三列） -->
                 <div class="result-section full-width"><h3>📊 八大模块综合评分</h3><div id="overallScores"></div><div id="overallInterpretation" class="analysis-box" style="margin-top:4px;"></div></div>
-                <div class="result-section full-width"><h3>🎭 MBTI 性格类型</h3><div id="mbtiResult" class="analysis-box"></div></div>
-                <div class="result-section full-width"><h3>📊 DISC 行为风格</h3><div id="discResult" class="analysis-box"></div></div>
-                <div class="result-section full-width"><h3>🐾 PDP 天赋特质</h3><div id="pdpResult" class="analysis-box"></div></div>
-                <div class="result-section full-width"><h3>💼 OPQ 管理潜质（通道定制）</h3><div id="opqResult" class="analysis-box"></div></div>
-                <div class="result-section full-width"><h3>🧠 SHL 认知能力（通道定制·含高难度）</h3><div id="shlResult" class="analysis-box"></div></div>
-                <div class="result-section full-width"><h3>🌟 北森 素养与情商（通道定制）</h3><div id="beisenResult" class="analysis-box"></div></div>
-                <div class="result-section full-width"><h3>🔍 IQ 智力测试（行业定制·场景化）</h3><div id="iqResult" class="analysis-box"></div></div>
-                <div class="result-section full-width"><h3>❤️ EQ 情商测试（通道定制）</h3><div id="eqResult" class="analysis-box"></div></div>
-                <div class="result-section full-width"><h3>📈 行业与通道适配度</h3><div id="industryFit" class="analysis-box"></div></div>
 
-                <!-- 招聘用人建议（左）与个人发展建议（右）对称 -->
-                <div class="left-panel">
-                    <h3>💡 招聘用人建议</h3>
-                    <ul id="recruitSuggestions" class="suggestions-list"></ul>
-                </div>
-                <div class="right-panel">
-                    <h3>📚 个人发展建议</h3>
-                    <ul id="personalSuggestions" class="suggestions-list"></ul>
-                </div>
+                <!-- MBTI、PDP、DISC 三列等宽 -->
+                <div class="panel"><h3>🎭 MBTI 性格类型</h3><div id="mbtiResult" class="analysis-box"></div></div>
+                <div class="panel"><h3>🐾 PDP 天赋特质</h3><div id="pdpResult" class="analysis-box"></div></div>
+                <div class="panel"><h3>📊 DISC 行为风格</h3><div id="discResult" class="analysis-box"></div></div>
+
+                <!-- OPQ、SHL、IQ -->
+                <div class="panel"><h3>💼 OPQ 管理潜质（通道定制）</h3><div id="opqResult" class="analysis-box"></div></div>
+                <div class="panel"><h3>🧠 SHL 认知能力（通道定制·含高难度）</h3><div id="shlResult" class="analysis-box"></div></div>
+                <div class="panel"><h3>🔍 IQ 智力测试（行业定制·场景化）</h3><div id="iqResult" class="analysis-box"></div></div>
+
+                <!-- EQ、北森、行业适配度 -->
+                <div class="panel"><h3>❤️ EQ 情商测试（通道定制）</h3><div id="eqResult" class="analysis-box"></div></div>
+                <div class="panel"><h3>🌟 北森 素养与情商（通道定制）</h3><div id="beisenResult" class="analysis-box"></div></div>
+                <div class="panel"><h3>📈 行业与通道适配度</h3><div id="industryFit" class="analysis-box"></div></div>
+
+                <!-- 招聘用人建议与个人发展建议 -->
+                <div class="panel"><h3>💡 招聘用人建议</h3><ul id="recruitSuggestions" class="suggestions-list"></ul></div>
+                <div class="panel"><h3>📚 个人发展建议</h3><ul id="personalSuggestions" class="suggestions-list"></ul></div>
+                <!-- 第三列留空，网格自动填充 -->
 
                 <!-- ===== 操作按钮 ===== -->
                 <div class="result-actions">
@@ -1231,7 +1261,7 @@
             }
 
             // ================================================================
-            // 8. EQ (10题) 按通道，各维度2题（精简版）
+            // 8. EQ (10题) 按通道，各维度2题
             // ================================================================
             var eqByChannel = {
                 '管理': [
@@ -1339,7 +1369,6 @@
                 if (!name || !dept || !industry || !channel) { alert('⚠️ 请完整填写所有必填信息！'); return; }
                 userInfo = { name, dept, industry, channel, date: new Date().toLocaleDateString('zh-CN') };
                 questions = buildQuestions(industry, channel);
-                // 确保题数为120
                 if (questions.length !== 120) {
                     console.warn('实际题数 ' + questions.length + '，期望 120');
                 }
@@ -1462,7 +1491,99 @@
             }
 
             // ================================================================
-            // 13. 显示结果
+            // 13. 绘制雷达图
+            // ================================================================
+            function drawRadarChart(canvas, scores) {
+                var ctx = canvas.getContext('2d');
+                var width = canvas.width;
+                var height = canvas.height;
+                var centerX = width / 2;
+                var centerY = height / 2;
+                var radius = Math.min(width, height) * 0.38;
+
+                var labels = ['MBTI', 'DISC', 'PDP', 'OPQ', 'SHL', '北森', 'IQ', 'EQ'];
+                var values = labels.map(function(label) { return scores[label] || 0; });
+                var numAxes = labels.length;
+                var angleStep = (Math.PI * 2) / numAxes;
+
+                // 清空画布
+                ctx.clearRect(0, 0, width, height);
+
+                // 绘制背景网格（三层）
+                for (var ring = 1; ring <= 3; ring++) {
+                    var r = radius * (ring / 3);
+                    ctx.beginPath();
+                    for (var i = 0; i <= numAxes; i++) {
+                        var angle = i * angleStep - Math.PI / 2;
+                        var x = centerX + r * Math.cos(angle);
+                        var y = centerY + r * Math.sin(angle);
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.strokeStyle = '#ddd';
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                }
+
+                // 绘制轴线
+                for (var i = 0; i < numAxes; i++) {
+                    var angle = i * angleStep - Math.PI / 2;
+                    var x = centerX + radius * Math.cos(angle);
+                    var y = centerY + radius * Math.sin(angle);
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(x, y);
+                    ctx.strokeStyle = '#ccc';
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+
+                    // 标签
+                    var labelRadius = radius * 1.08;
+                    var lx = centerX + labelRadius * Math.cos(angle);
+                    var ly = centerY + labelRadius * Math.sin(angle);
+                    ctx.fillStyle = '#333';
+                    ctx.font = '10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(labels[i], lx, ly);
+                }
+
+                // 绘制数据区域
+                ctx.beginPath();
+                for (var i = 0; i <= numAxes; i++) {
+                    var idx = i % numAxes;
+                    var value = Math.min(values[idx], 100);
+                    var r = (value / 100) * radius;
+                    var angle = i * angleStep - Math.PI / 2;
+                    var x = centerX + r * Math.cos(angle);
+                    var y = centerY + r * Math.sin(angle);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(102, 126, 234, 0.25)';
+                ctx.fill();
+                ctx.strokeStyle = '#667eea';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // 绘制数据点
+                for (var i = 0; i < numAxes; i++) {
+                    var value = Math.min(values[i], 100);
+                    var r = (value / 100) * radius;
+                    var angle = i * angleStep - Math.PI / 2;
+                    var x = centerX + r * Math.cos(angle);
+                    var y = centerY + r * Math.sin(angle);
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                    ctx.fillStyle = '#667eea';
+                    ctx.fill();
+                }
+            }
+
+            // ================================================================
+            // 14. 显示结果
             // ================================================================
             function showResult() {
                 var scores = calculateScores();
@@ -1489,7 +1610,7 @@
                 }
                 document.getElementById('validityWarning').innerHTML = warnHtml;
 
-                // ---- 核心优势与风险摘要（右） ----
+                // ---- 核心优势与风险摘要（中） ----
                 var summary = '<div class="recruit-highlight"><strong>🔍 核心特质：</strong>' + getMBTIType(ds) + ' | ' +
                     (function() { var dt = getDISCType(ds); var map = { 'D': '支配型', 'I': '影响型', 'S': '稳健型',
                             'C': '谨慎型' }; return dt + '（' + (map[dt] || '') + '）'; })() + ' | PDP-' + getPDPType(
@@ -1501,7 +1622,13 @@
                     '作答真实度较高，报告具有参考价值。') + '</div>';
                 document.getElementById('recruitSummary').innerHTML = summary;
 
-                // ---- 八大模块评分 ----
+                // ---- 绘制雷达图（右） ----
+                var canvas = document.getElementById('radarChart');
+                if (canvas) {
+                    drawRadarChart(canvas, ms);
+                }
+
+                // ---- 八大模块综合评分（跨三列） ----
                 var overallHtml = '';
                 var modNames = ['MBTI', 'DISC', 'PDP', 'OPQ', 'SHL', '北森', 'IQ', 'EQ'];
                 modNames.forEach(function(m) {
@@ -1526,15 +1653,6 @@
                     'MBTI']['TF'] || 50) + '，J/P=' + (ds['MBTI']['JP'] || 50) + '</p>';
                 document.getElementById('mbtiResult').innerHTML = mbtiHtml;
 
-                // ---- DISC ----
-                var discType = getDISCType(ds);
-                var discMap = { 'D': '支配型', 'I': '影响型', 'S': '稳健型', 'C': '谨慎型' };
-                var discHtml = '<p><strong>主导风格：' + discType + '（' + discMap[discType] + '）</strong></p>';
-                discHtml += '<p>D=' + (ds['DISC']['D'] || 0) + '，I=' + (ds['DISC']['I'] || 0) + '，S=' + (ds['DISC'][
-                    'S'] || 0) + '，C=' + (ds['DISC']['C'] || 0) + '</p>';
-                discHtml += '<p style="font-size:10px;color:#888;">* 计分已包含反向矫正，得分反映真实倾向。</p>';
-                document.getElementById('discResult').innerHTML = discHtml;
-
                 // ---- PDP ----
                 var pdpType = getPDPType(ds);
                 var pdpMap = { '老虎': '支配型', '孔雀': '外向型', '考拉': '耐心型', '猫头鹰': '精确型', '变色龙': '整合型' };
@@ -1543,6 +1661,15 @@
                 var pdpScores = animalList.map(function(a) { return a + '=' + (ds['PDP'][a] || 0); }).join('，');
                 pdpHtml += '<p>' + pdpScores + '</p>';
                 document.getElementById('pdpResult').innerHTML = pdpHtml;
+
+                // ---- DISC ----
+                var discType = getDISCType(ds);
+                var discMap = { 'D': '支配型', 'I': '影响型', 'S': '稳健型', 'C': '谨慎型' };
+                var discHtml = '<p><strong>主导风格：' + discType + '（' + discMap[discType] + '）</strong></p>';
+                discHtml += '<p>D=' + (ds['DISC']['D'] || 0) + '，I=' + (ds['DISC']['I'] || 0) + '，S=' + (ds['DISC'][
+                    'S'] || 0) + '，C=' + (ds['DISC']['C'] || 0) + '</p>';
+                discHtml += '<p style="font-size:10px;color:#888;">* 计分已包含反向矫正，得分反映真实倾向。</p>';
+                document.getElementById('discResult').innerHTML = discHtml;
 
                 // ---- OPQ ----
                 var opqDims = Object.keys(ds['OPQ'] || {});
@@ -1568,18 +1695,6 @@
                 });
                 document.getElementById('shlResult').innerHTML = shlHtml;
 
-                // ---- 北森 ----
-                var beiDims = Object.keys(ds['北森'] || {});
-                var beiHtml = '<p><strong>素养与情商（通道定制，含反向矫正）：</strong></p>';
-                beiDims.forEach(function(d) {
-                    var sc = ds['北森'][d] || 0;
-                    var level = getLevel(sc);
-                    beiHtml += '<div class="score-row"><div class="score-name">' + d + '</div><div class="score-bar"><div class="score-fill" style="width:' +
-                        sc + '%"></div></div><div class="score-value">' + sc + '</div><span class="score-tag ' + level
-                        .cls + '">' + level.text + '</span></div>';
-                });
-                document.getElementById('beisenResult').innerHTML = beiHtml;
-
                 // ---- IQ ----
                 var iqDims = Object.keys(ds['IQ'] || {});
                 var iqHtml = '<p><strong>智力测试（行业定制·场景化，严格计分，正确=4分，错误=0分）：</strong></p>';
@@ -1603,6 +1718,18 @@
                         .cls + '">' + level.text + '</span></div>';
                 });
                 document.getElementById('eqResult').innerHTML = eqHtml;
+
+                // ---- 北森 ----
+                var beiDims = Object.keys(ds['北森'] || {});
+                var beiHtml = '<p><strong>素养与情商（通道定制，含反向矫正）：</strong></p>';
+                beiDims.forEach(function(d) {
+                    var sc = ds['北森'][d] || 0;
+                    var level = getLevel(sc);
+                    beiHtml += '<div class="score-row"><div class="score-name">' + d + '</div><div class="score-bar"><div class="score-fill" style="width:' +
+                        sc + '%"></div></div><div class="score-value">' + sc + '</div><span class="score-tag ' + level
+                        .cls + '">' + level.text + '</span></div>';
+                });
+                document.getElementById('beisenResult').innerHTML = beiHtml;
 
                 // ---- 行业与通道适配 ----
                 var industry = userInfo.industry,
@@ -1695,7 +1822,7 @@
             }
 
             // ================================================================
-            // 14. PDF下载
+            // 15. PDF下载
             // ================================================================
             window.downloadPDF = function(btn) {
                 if (!window.resultData) { alert('请先完成测评！'); return; }
@@ -1730,7 +1857,7 @@
             };
 
             // ================================================================
-            // 15. 复制结果（简要）
+            // 16. 复制结果（简要）
             // ================================================================
             window.copyResult = function() {
                 var text = '综合人才测评报告（通道定制版，120题）\n姓名：' + userInfo.name + ' 岗位：' + userInfo.dept + ' 通道：' + userInfo
@@ -1748,7 +1875,7 @@
             };
 
             // ================================================================
-            // 16. 复制微信摘要
+            // 17. 复制微信摘要
             // ================================================================
             window.copyWechatText = function() {
                 if (!window._reportData) {
@@ -1804,7 +1931,7 @@
             };
 
             // ================================================================
-            // 17. 邮件发送（mailto）
+            // 18. 邮件发送（mailto）
             // ================================================================
             window.sendEmailReport = function() {
                 if (!window._reportData) {
@@ -1856,7 +1983,7 @@
             };
 
             // ================================================================
-            // 18. 重新测评
+            // 19. 重新测评
             // ================================================================
             window.restartQuiz = function() { currentQuestion = 0;
                 answers = [];
@@ -1865,7 +1992,7 @@
                 showSection('welcome'); };
 
             // ================================================================
-            // 19. 键盘快捷键
+            // 20. 键盘快捷键
             // ================================================================
             document.addEventListener('keydown', function(e) {
                 var qa = document.getElementById('quiz').classList.contains('active');
