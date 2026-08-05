@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
     </script>
     <style>
-        /* ===== 全局样式 ===== */
+        /* ===== 全局样式（白色主题） ===== */
         * {
             margin: 0;
             padding: 0;
@@ -16,31 +16,34 @@
         }
         body {
             font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: #f4f7fc;
             min-height: 100vh;
             padding: 12px;
         }
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            background: #fff;
+            background: #ffffff;
             border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
             overflow: hidden;
         }
         .header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #fff;
+            background: #ffffff;
+            color: #1e3c72;
             padding: 24px 16px;
             text-align: center;
+            border-bottom: 1px solid #e9ecef;
         }
         .header h1 {
             font-size: 22px;
             margin-bottom: 4px;
+            color: #2a5298;
         }
         .header p {
             font-size: 13px;
-            opacity: 0.9;
+            opacity: 0.85;
+            color: #5a6a7e;
         }
         .content {
             padding: 20px 16px;
@@ -73,6 +76,7 @@
             line-height: 1.7;
             color: #333;
             font-size: 14px;
+            border: 1px solid #e9ecef;
         }
         .welcome-page .intro h3 {
             color: #2a5298;
@@ -125,10 +129,12 @@
             margin: 18px 0;
         }
         .dimension-card {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            background: #ffffff;
             border-radius: 10px;
             padding: 14px 8px;
             text-align: center;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .dimension-card .icon {
             font-size: 26px;
@@ -163,12 +169,13 @@
             box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
         }
         .btn-secondary {
-            background: #e0e0e0;
+            background: #e9ecef;
             color: #333;
         }
         .btn-secondary:hover {
-            background: #d0d0d0;
+            background: #dde1e6;
             box-shadow: none;
+            transform: none;
         }
         .btn:disabled {
             opacity: 0.6;
@@ -232,6 +239,7 @@
             min-height: 70px;
             display: flex;
             align-items: center;
+            border: 1px solid #e9ecef;
         }
         .question-text {
             font-size: 16px;
@@ -253,6 +261,7 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
+            background: #ffffff;
         }
         .option-item:hover {
             border-color: #667eea;
@@ -260,14 +269,14 @@
         }
         .option-item.selected {
             border-color: #667eea;
-            background: linear-gradient(135deg, #f0f3ff 0%, #f8f9ff 100%);
+            background: #f0f3ff;
         }
         .option-label {
             width: 28px;
             height: 28px;
             border-radius: 50%;
             background: #f0f0f0;
-            color: #888;
+            color: #555;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -313,30 +322,32 @@
         #result .result-header {
             grid-column: 1/-1;
             text-align: center;
-            background: linear-gradient(135deg, #f0f3ff 0%, #e8ecff 100%);
+            background: #f0f3ff;
             border-radius: 8px;
             padding: 10px 12px;
             margin-bottom: 2px;
+            border: 1px solid #d9e2ef;
         }
         #result .result-header h2 {
             font-size: 18px;
             margin-bottom: 2px;
+            color: #1e3c72;
         }
         #result .result-header .result-user-info {
             font-size: 12px;
-            color: #666;
+            color: #4a5a6e;
             line-height: 1.4;
         }
 
-        /* 面板样式 - 所有面板统一为1列（等宽） */
         .panel {
-            background: #fafbfc;
+            background: #ffffff;
             border-radius: 6px;
             padding: 6px 10px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
             display: flex;
             flex-direction: column;
             grid-column: span 1;
+            border: 1px solid #e9ecef;
         }
         .panel-warning {
             background: #fff8e7;
@@ -351,6 +362,7 @@
         }
         .panel .analysis-box {
             border-left-color: #667eea;
+            background: #fafbfc;
         }
 
         .panel .suggestions-list li::before {
@@ -363,7 +375,6 @@
             font-weight: bold;
         }
 
-        /* 雷达图容器 */
         .radar-container {
             display: flex;
             justify-content: center;
@@ -380,7 +391,6 @@
             border-radius: 4px;
         }
 
-        /* 占满三列的模块 */
         .full-width {
             grid-column: 1/-1;
         }
@@ -463,7 +473,7 @@
             color: #8a6d3b;
         }
         .analysis-box {
-            background: #fff;
+            background: #fafbfc;
             border-radius: 4px;
             padding: 6px 8px;
             font-size: 11px;
@@ -646,7 +656,7 @@
                     <div class="intro">
                         <h3>📋 测评说明</h3>
                         <p>本测评体系由人力资源管理师<strong>DAVY</strong>设计，根据您选择的行业自动匹配考核场景，以招聘为核心导向，基于心理学、组织行为学及人才管理理论构建多维评估模型，从<strong>MBTI、DISC、PDP、OPQ、SHL、北森、IQ、EQ</strong>八大核心维度，对候选人进行系统性、动态化评估。通过定量测评工具与定性行为分析相结合的方法，构建标准化与个性化并重的评估矩阵，旨在为企业提供精准的用人决策参考，优化人才匹配效能；同时赋能个体深度认知自身优势特征及发展象限，支持职业路径规划与潜能开发。测评结果以可视化多维雷达图及诊断性报告呈现，兼具科学性与实践指导价值，适用于战略性招聘筛选、人才梯队建设及人岗动态适配等多场景应用。</p>
-                        <p style="margin-top:8px;">⏱️ 时长：25-30分钟 | 📊 专业分析报告 | 📄 支持PDF下载 | 📧 一键邮件发送 | 💬 微信转发</p>
+                        <p style="margin-top:8px;">⏱️ 时长：25-32分钟 | 📊 专业分析报告 | 📄 支持PDF下载 | 📧 一键邮件发送 | 💬 微信转发</p>
                     </div>
                     <div class="dimensions-grid">
                         <div class="dimension-card"><div class="icon">🎭</div><h4>MBTI 性格类型</h4><p>30题</p></div>
